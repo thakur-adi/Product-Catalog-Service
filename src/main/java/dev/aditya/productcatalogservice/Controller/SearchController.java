@@ -27,20 +27,17 @@ public class SearchController {
 
     @PostMapping
     public Page<ProductResponseDTO> searchProductByCategoryQuery(@RequestBody SearchRequestDTO searchRequestDTO){
-        Page<Product> pageProducts = searchService.searchProduct(searchRequestDTO.getQuery(),searchRequestDTO.getPageNumber(),searchRequestDTO.getPageSize());
+
+        Page<Product> pageProducts = searchService.searchProduct(searchRequestDTO.getQuery()
+                                                                ,searchRequestDTO.getPageNumber()
+                                                                ,searchRequestDTO.getPageSize());
 
         return new PageImpl<>(convertPageProductToResponseDTO(pageProducts),pageProducts.getPageable(),pageProducts.getTotalElements());
     }
 
 
     //Helper Methods
-
     private List<ProductResponseDTO> convertPageProductToResponseDTO(Page<Product> pageProducts){
-        List<Product> products = pageProducts.getContent();
-        List<ProductResponseDTO> productResponseDTOS = new ArrayList<>();
-        for (Product p: products){
-            productResponseDTOS.add(p.convertToResponseDTO());
-        }
-        return  productResponseDTOS;
+        return pageProducts.stream().map(product -> product.convertToResponseDTO()).toList();
     }
 }
