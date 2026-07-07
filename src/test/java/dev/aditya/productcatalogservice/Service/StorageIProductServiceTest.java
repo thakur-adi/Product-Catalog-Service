@@ -7,7 +7,6 @@ import dev.aditya.productcatalogservice.Model.ModelStatus;
 import dev.aditya.productcatalogservice.Model.Product;
 import dev.aditya.productcatalogservice.Repository.ProductRepo;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,14 +24,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class StorageProductServiceTest {
+class StorageIProductServiceTest {
     //ideally we never mock Validations since it'll be a static method. So not required, let it run normally
     @MockitoBean
     private ProductRepo productRepo;
 
     @Qualifier("StorageProductService")
     @Autowired
-    private ProductService productService;
+    private IProductService IProductService;
     
 
     //Create a dummy Product for testing -> This is a stub
@@ -66,7 +65,7 @@ class StorageProductServiceTest {
         when(productRepo.findById(1L)).thenReturn(dummyProductOptional);
 
         //Act
-        Product expectedProduct =  productService.getProductById(1);
+        Product expectedProduct =  IProductService.getProductById(1);
 
         //Assert
         assertEquals(1,expectedProduct.getId());
@@ -84,7 +83,7 @@ class StorageProductServiceTest {
 
 
         //Act & Assert
-        assertThrows(ProductNotFoundException.class,() -> productService.getProductById(1));
+        assertThrows(ProductNotFoundException.class,() -> IProductService.getProductById(1));
     }
 
     //Happy path
@@ -100,7 +99,7 @@ class StorageProductServiceTest {
         when(productRepo.findAll()).thenReturn(productList);
 
         //Act
-        List<Product> expectedProducts = productService.getAllProducts();
+        List<Product> expectedProducts = IProductService.getAllProducts();
 
         //Assert
         assertEquals(1,expectedProducts.get(0).getId());
@@ -115,7 +114,7 @@ class StorageProductServiceTest {
         when(productRepo.findAll()).thenReturn(dummyEmptyProductList);
 
         //Act and Assert
-        assertThrows(ProductNotFoundException.class,() -> productService.getAllProducts());
+        assertThrows(ProductNotFoundException.class,() -> IProductService.getAllProducts());
     }
 
     //Happy path
@@ -135,7 +134,7 @@ class StorageProductServiceTest {
 
 
         //Act
-        Product expectedProduct = productService.createNewProduct(dummyProduct.getName(), dummyProduct.getDescription(),
+        Product expectedProduct = IProductService.createNewProduct(dummyProduct.getName(), dummyProduct.getDescription(),
                                                                   dummyProduct.getImageUrl(), dummyProduct.getPrice(),
                                                                   dummyProduct.getCategory().getName());
 
@@ -153,7 +152,7 @@ class StorageProductServiceTest {
         
         //Act and Assert
         assertThrows(ProductAlreadyExistsException.class, 
-                    ()->productService.createNewProduct("name","desc","image",10.0,"categoryName"));
+                    ()-> IProductService.createNewProduct("name","desc","image",10.0,"categoryName"));
         
     }
 
@@ -162,14 +161,14 @@ class StorageProductServiceTest {
     void testUpdateProductReturnsProduct() throws ProductNotFoundException {
         //Arrange
         Optional<Product> dummyProductOptional = Optional.of(dummyProduct);
-        //This(when()) only works with mocked Objects not real objects like productService.getById(1) will fail.
-        // It would use the original object since "productService" is not mocked, and would give the actual result instead of using when().thenReturn()(this method won't get used at all).
+        //This(when()) only works with mocked Objects not real objects like IProductService.getById(1) will fail.
+        // It would use the original object since "IProductService" is not mocked, and would give the actual result instead of using when().thenReturn()(this method won't get used at all).
         when(productRepo.findById(1L)).thenReturn(dummyProductOptional);
 
         when(productRepo.save(any())).thenReturn(dummyProduct);
 
         //Act
-        Product expectedProduct = productService.updateProductById(1,dummyProduct.getName(), dummyProduct.getDescription(),
+        Product expectedProduct = IProductService.updateProductById(1,dummyProduct.getName(), dummyProduct.getDescription(),
                                                                     dummyProduct.getImageUrl(), dummyProduct.getPrice(),
                                                                     dummyProduct.getCategory().getName());
 
@@ -187,7 +186,7 @@ class StorageProductServiceTest {
 
         //Act and Assert
         assertThrows(ProductNotFoundException.class,
-                ()->productService.updateProductById(1,"name","desc","image",10.0,"categoryName"));
+                ()-> IProductService.updateProductById(1,"name","desc","image",10.0,"categoryName"));
 
     }
 
@@ -206,7 +205,7 @@ class StorageProductServiceTest {
         when(productRepo.save(any())).thenReturn(dummyProduct);
         
         //Act
-        Product expectedProductResult = productService.deleteProductById(1);
+        Product expectedProductResult = IProductService.deleteProductById(1);
 
         //Assert
         assertEquals(1, expectedProductResult.getId());
@@ -225,7 +224,7 @@ class StorageProductServiceTest {
         dummyProduct.setStatus(ModelStatus.DELETED);
         when(productRepo.findById(1l)).thenReturn(Optional.of(dummyProduct));
         //Act & Assert
-        assertThrows(ProductNotFoundException.class, ()-> productService.deleteProductById(1));
+        assertThrows(ProductNotFoundException.class, ()-> IProductService.deleteProductById(1));
     }
 
 }

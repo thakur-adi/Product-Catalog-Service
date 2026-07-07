@@ -4,12 +4,11 @@ import dev.aditya.productcatalogservice.DTO.ProductRequestDTO;
 import dev.aditya.productcatalogservice.DTO.ProductResponseDTO;
 import dev.aditya.productcatalogservice.Model.Category;
 import dev.aditya.productcatalogservice.Model.Product;
-import dev.aditya.productcatalogservice.Service.ProductService;
+import dev.aditya.productcatalogservice.Service.IProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +26,7 @@ class ProductControllerTest {
 
     @MockitoBean
     @Qualifier("StorageProductService")
-    ProductService productService;
+    IProductService IProductService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -60,7 +59,7 @@ class ProductControllerTest {
        //Arrange
         Product dummyProduct = createNewDummyProduct("Dummy Product for getById() method");
 
-        when(productService.getProductById(1)).thenReturn(dummyProduct);
+        when(IProductService.getProductById(1)).thenReturn(dummyProduct);
 
         ProductResponseDTO expectedResponseDTO = dummyProduct.convertToResponseDTO();
 
@@ -83,7 +82,7 @@ class ProductControllerTest {
 
         List<Product> dummyProductList = List.of(dummyProduct1,dummyProduct2);
 
-        when(productService.getAllProducts()).thenReturn(dummyProductList);
+        when(IProductService.getAllProducts()).thenReturn(dummyProductList);
 
         //Have to create a list of DTOs cause our method returns "response DTO" and not the "Model class". So we compare with Response DTO and not the Dummy Product List
         ProductResponseDTO productResponseDTO1 = dummyProduct1.convertToResponseDTO() ;
@@ -108,7 +107,7 @@ class ProductControllerTest {
     void testDeleteProductByIdRunsSuccessfully() throws Exception {
         Product dummyProduct = createNewDummyProduct("Dummy for Delete() Method");
 
-        when(productService.deleteProductById(1)).thenReturn(dummyProduct);
+        when(IProductService.deleteProductById(1)).thenReturn(dummyProduct);
 
         String expectedResponse = "Product: " + dummyProduct.getName() +"of Category: "+ dummyProduct.getCategory().getName() +" has been deleted Successfully";
 
@@ -133,7 +132,7 @@ class ProductControllerTest {
         ProductResponseDTO expectedResponseDTO = dummyProduct.convertToResponseDTO();
 
 
-        when(productService.createNewProduct(dummyRequestDTO.getProductName(),dummyRequestDTO.getDescription(),
+        when(IProductService.createNewProduct(dummyRequestDTO.getProductName(),dummyRequestDTO.getDescription(),
                 dummyRequestDTO.getImageUrl(),dummyRequestDTO.getPrice(),dummyRequestDTO.getCategoryName()))
         .thenReturn(dummyProduct);
 
@@ -161,7 +160,7 @@ class ProductControllerTest {
         ProductResponseDTO expectedResponseDTO = dummyProduct.convertToResponseDTO();
 
 
-        when(productService.updateProductById(1, dummyRequestDTO.getProductName(),dummyRequestDTO.getDescription(),
+        when(IProductService.updateProductById(1, dummyRequestDTO.getProductName(),dummyRequestDTO.getDescription(),
                 dummyRequestDTO.getImageUrl(),dummyRequestDTO.getPrice(),dummyRequestDTO.getCategoryName()))
                 .thenReturn(dummyProduct);
 

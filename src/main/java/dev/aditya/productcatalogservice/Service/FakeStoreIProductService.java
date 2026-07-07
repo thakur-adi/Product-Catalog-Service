@@ -14,16 +14,17 @@ import java.util.List;
 
 //From this service class we are communicating to another 3rd party service called FakeStore. This acts as a proxy for FakeStore.
 @Service("FakeStoreProductService")
-public class FakeStoreProductService implements ProductService {
+public class FakeStoreIProductService implements IProductService {
 
     //RestTemplate restTemplate;
     RestClient restClient;
     private final String baseURL = "https://fakestoreapi.com/products";
+    //or "https://fakestoreapi.com/products/{prodId}" --> this is recommended way(copy the sample url and just replace the var instead of concatenating).
 
 
     //Injecting the restTemplate reference using constructor -> This is known as Constructor Injection
     //@Autowired
-    FakeStoreProductService(RestClient restClient)
+    FakeStoreIProductService(RestClient restClient)
     {
         this.restClient = restClient;
     }
@@ -31,7 +32,7 @@ public class FakeStoreProductService implements ProductService {
 
 
 //    @Autowired(required = false) (required = false condition is a Fail-Safe in case there is no bean for rest template it'll try injecting in the other constructor)
-//    FakeStoreProductService(RestTemplate restTemplate)
+//    FakeStoreIProductService(RestTemplate restTemplate)
 //    {
 //        this.restTemplate=restTemplate;
 //    }
@@ -123,7 +124,7 @@ public class FakeStoreProductService implements ProductService {
             throw new ProductNotFoundException();
         }
         ResponseEntity<FakeStoreDTO> fakeStoreDTOResponseEntity=restClient.delete()
-                                                                          .uri(baseURL+"/"+prodId) //No need to pass id twice, Spring can get confused
+                                                                          .uri("https://fakestoreapi.com/products/{prodId}"+prodId) //this is the ideal way just copy the sample url and replace the {} with variable provided
                                                                           .retrieve()
                                                                           .toEntity(FakeStoreDTO.class);
 

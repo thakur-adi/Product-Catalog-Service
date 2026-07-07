@@ -15,25 +15,25 @@ import java.util.Optional;
 
 
 @Service("StorageProductService")
-public class StorageProductService implements ProductService {
+public class StorageIProductService implements IProductService {
 
     private ProductRepo productRepo;
     private CategoryRepo categoryRepo;
 
-    StorageProductService(ProductRepo productRepo,CategoryRepo categoryRepo){
+    StorageIProductService(ProductRepo productRepo, CategoryRepo categoryRepo){
         this.productRepo=productRepo;
         this.categoryRepo=categoryRepo;
     }
 
 
     @Override
-    public Product getProductById(long prodId) throws ProductNotFoundException {
+    public Product getProductById(long prodId) {
         return Validation.getValidProduct(productRepo.findById(prodId));
     }
 
 
     @Override
-    public List<Product> getAllProducts() throws ProductNotFoundException {
+    public List<Product> getAllProducts() {
         List<Product> products = productRepo.findAll(); //Custom Query for finding active products not working for some reason. Will look into it later.
         if(products.size()==0)
         {
@@ -68,7 +68,7 @@ public class StorageProductService implements ProductService {
     }
 
     @Override
-    public Product deleteProductById(long prodId) throws ProductNotFoundException {
+    public Product deleteProductById(long prodId) {
             Product product = getProductById(prodId);
             product.setStatus(ModelStatus.DELETED);
             productRepo.save(product);

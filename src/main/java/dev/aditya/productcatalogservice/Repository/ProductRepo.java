@@ -1,6 +1,8 @@
 package dev.aditya.productcatalogservice.Repository;
 
 import dev.aditya.productcatalogservice.Model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -29,4 +31,6 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
 
 
     Optional<Product> findProductByNameAndCategoryName(String name, String categoryName);
+
+    Page<Product> findByNameContaining(String name, Pageable pageable);
 }
