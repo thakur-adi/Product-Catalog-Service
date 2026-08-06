@@ -4,6 +4,7 @@ import jakarta.transaction.NotSupportedException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,6 +45,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleWrongRequestMethodException(HttpRequestMethodNotSupportedException e){
         return  new ResponseEntity<>("The requested method is not supported. Please verify the URL and HTTP method and try again!!",
                 HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+        return new ResponseEntity<>("Missing Message Body. Please provide a Http Body and try again!!",
+                HttpStatus.BAD_REQUEST);
     }
 
 

@@ -25,7 +25,7 @@ public class ProductController {
     }
 
 
-    @GetMapping("/find/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable("id") long prodId) {
         Product product = IProductService.getProductById(prodId);
         return new ResponseEntity<>(product.convertToResponseDTO(),HttpStatus.OK);
@@ -33,7 +33,7 @@ public class ProductController {
 
 
 
-    @GetMapping("/find")
+    @GetMapping("/")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return new ResponseEntity<>( IProductService.getAllProducts()
                                               .stream()
@@ -49,7 +49,7 @@ public class ProductController {
     // our proxy successfully forwards the request and displays the result(be it null or successful), so it'll always show status code as 200 but that might not be the actual output.
     // so to get proper response from 3rd party API we need to wrap it in Response Entity. So that we can manually set headers and change the status code dynamically based on logic
     //So I have converted all the return types to a ResponseEntity
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<ProductResponseDTO> createNewProduct(@RequestBody ProductRequestDTO productRequestDTO) {
         return new ResponseEntity<>(IProductService.createNewProduct(productRequestDTO.getProductName(),
                                                                     productRequestDTO.getDescription(),
@@ -62,7 +62,7 @@ public class ProductController {
     }
 
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProductById(@PathVariable("id") long prodId,
                                                                 @RequestBody ProductRequestDTO productRequestDTO)
                                                                 throws ProductNotFoundException
@@ -77,7 +77,7 @@ public class ProductController {
     }
 
     //Again Delete operation has a void return type, to give out proper response with a message we wrap it into a response entity with status as 'ok'
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProductById(@PathVariable("id") long id) {
         Product product = IProductService.deleteProductById(id);
         return new ResponseEntity<>( "Product: " + product.getName() +" of Category: "+ product.getCategory().getName() +" has been deleted Successfully",
