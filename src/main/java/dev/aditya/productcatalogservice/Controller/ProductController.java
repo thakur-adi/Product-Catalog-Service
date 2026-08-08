@@ -33,7 +33,7 @@ public class ProductController {
 
 
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return new ResponseEntity<>( IProductService.getAllProducts()
                                               .stream()

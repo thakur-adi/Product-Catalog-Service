@@ -18,4 +18,11 @@ public class Validation {
         }
         return optionalProduct.get();
     }
+
+    public static Boolean checkAuthorization(String role){
+            if(role.equalsIgnoreCase("ADMIN")||role.equalsIgnoreCase("SUPER_ADMIN")||role.equalsIgnoreCase("SELLER")||role.equalsIgnoreCase("OWNER")){
+                return true;
+            }
+        return false;
+    }
 }
