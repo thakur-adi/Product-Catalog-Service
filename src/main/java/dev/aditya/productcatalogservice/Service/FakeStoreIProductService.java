@@ -4,6 +4,7 @@ import dev.aditya.productcatalogservice.DTO.FakeStoreDTO;
 import dev.aditya.productcatalogservice.Exception.ProductNotFoundException;
 import dev.aditya.productcatalogservice.Model.Category;
 import dev.aditya.productcatalogservice.Model.Product;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class FakeStoreIProductService implements IProductService {
 
     //Injecting the restTemplate reference using constructor -> This is known as Constructor Injection
     //@Autowired
-    FakeStoreIProductService(RestClient restClient)
+    FakeStoreIProductService(@Qualifier("RestClient") RestClient restClient)
     {
         this.restClient = restClient;
     }
@@ -45,7 +46,7 @@ public class FakeStoreIProductService implements IProductService {
         FakeStoreDTO fakeStoreDTO = restClient.get()
                                               .uri(baseURL+"/"+prodId)// <--- This variable is for the URL template nothing to do http request body. Control WHERE the request goes (modifying the web link string).
                                               .retrieve()
-                                              .body(FakeStoreDTO.class);
+                                              .body(FakeStoreDTO.class);//Two option either get it in a DTO body altogether, or get in the form of entity.
 
         //Using Rest Template
         //we can also call getForEntity() and get the status from there.
